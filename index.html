@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate</title>
+    <style>
+        #container
+        {
+            display: flex;
+            border: 1px solid rgb(114, 95, 95);
+           background-color: teal;
+
+        }
+        #input, #output
+        {
+            flex:1;
+            margin: 5%;
+            height: 300px;
+          
+            background-color: white;
+            text-align: center;
+        }
+        #input-text
+        {
+            width: 90%;
+            height:270px;
+           
+            text-align: center;
+        }
+        
+        #input-text::placeholder
+        {
+            color: white;
+            text-align: center;
+            font-size: 40px;
+        }
+        #out_lang
+        {
+            height: 20px;
+            width: 100%;
+        }
+        #inp_lang
+        {
+            height: 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+         <!-- <button onclick="Translate()">Translate</button> -->
+            <!-- <textarea name="input-text"  placeholder="Write here your language" id="input-text"></textarea> -->
+    <div id="container">
+        <div id="input">
+            <select name="inp_lang" id="inp_lang">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="fr">français</option>
+                <option value="or">Oriya</option>
+                <option value="sa">Sanskrit</option>
+                <option value="zh">Chinese</option>
+                <option value="de">German</option>
+                <option value="fa">Persian</option>
+                <option value="it">Italian</option>
+                <option value="fi">Finnish</option>
+            </select>
+            <!-- <input type="text" name="input-text" oninput="Translate()"  placeholder="Write here your language" id="input-text"> -->
+            <input type="text" name="input-text" oninput="devo(Translate,500)"  placeholder="Write here your language" id="input-text">
+        </div>
+        <div id="output">
+            <select name="out_lang" id="out_lang">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="fr">français</option>
+                <option value="or">Oriya</option>
+                <option value="sa">Sanskrit</option>
+                <option value="zh">Chinese</option>
+                <option value="de">German</option>
+                <option value="fa">Persian</option>
+                <option value="it">Italian</option>
+                <option value="fi">Finnish</option>
+            </select>
+            <p id="output_value"></p>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+function read(id)
+{
+    return document.getElementById(id).value;
+//    make life esy for make getElementById write one by 
+}
+
+function write(n)
+{
+    return document.getElementById(n).value;
+}
+
+
+//debouncing
+let id ;
+function devo(func,delay)
+{
+    if(id) 
+    clearTimeout(id)
+    id=setTimeout(() =>
+    {
+        func();
+    },delay)
+}
+async function Translate()
+{
+    try{
+    const input = read("input-text");
+    const input_lang = read("inp_lang");    
+    const out_lang = write("out_lang");
+    const res = await fetch('https://libretranslate.de/translate',
+    {
+        method:'POST',
+        body:JSON.stringify
+        ({
+            q:input,
+            source: input_lang,
+            target: out_lang,
+            format:'text',
+        }),
+        headers:
+        {
+            "Content-Type":'application/json'
+        },
+    });
+    const {translatedText} = await res.json();
+    console.log(translatedText);
+    document.getElementById("output_value").innerText=translatedText;
+    }catch(err)
+    {
+        console.log(err);
+    }
+}
+
+</script>
